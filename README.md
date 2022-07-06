@@ -10,6 +10,7 @@ Compared to faceapi.js, which is centered around several uses, one of them being
 facerec.js has a heavy dependency on [faceapi.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html).
 ```html
 <script src="https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/dist/face-api.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/stellasphere/facerec.js@main/facerec.js"></script>
 ```
 
 ## Initialize
