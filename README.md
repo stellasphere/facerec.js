@@ -114,6 +114,7 @@ To recognize a image from a URL, it needs to be in the form of a `img` element. 
 var urlimage = await facerec.getImage("https://m.media-amazon.com/images/I/51V0BCZiznL._SY445_.jpg")
 var urlimageresults = await recognizer.recognizeImage(urlimage)
 
+
 console.log(urlimageresults)
 /*
 [
@@ -227,10 +228,10 @@ Creates a labeled version of normal face descriptors. An array of labeled face d
 ## *async function:* facerec.recognizer(arraylabeledfacedescriptor, threshold)
 Creates the facial recognition model.
 #### Arguments
-- arraylabeledfacedescriptor: Array of [LabeledFaceDescriptors](#-LabeledFaceDescriptors) objects. (Either from a array created by the `toLabeledFaceDescriptors()` function on a [`FaceRecDataset`](#-FaceRecDataset) or from a array created by objects returned from `facerec.labeledfacedescriptor()`)
+- arraylabeledfacedescriptor: Array of [LabeledFaceDescriptors](#LabeledFaceDescriptors) objects. (Either from a array created by the `toLabeledFaceDescriptors()` function on a [`FaceRecDataset`](#FaceRecDataset) or from a array created by objects returned from `facerec.labeledfacedescriptor()`)
 - threshold: The minimum confidence needed to return a result. A value from 0 (100% confidence) to 1 (0% confidence) is required. *Ex: 0.3 for 70%* 
 
-**Returns:** A [FaceRecRecognizer](#-FaceRecRecognizer) object
+**Returns:** A [FaceRecRecognizer](#FaceRecRecognizer) object
 
 
 ## *async function:* facerec.drawResults(results,image,overlay)
@@ -254,7 +255,7 @@ There are no arguments to the constructor.
 
 #### Methods
 - `addImageURL(label,imageurl)`: Accepts a label and image url and adds it to the dataset.
-- `addImages(arrayoflabeledimages,custominterpreter)`: Accepts an array of images and adds it to the dataset. (See [Adding images to the dataset](#-Adding-images-to-the-dataset) for a working example)
+- `addImages(arrayoflabeledimages,custominterpreter)`: Accepts an array of images and adds it to the dataset. (See [Adding images to the dataset](#Adding-images-to-the-dataset) for a working example)
   - Unless a custom interpreter is used, it will assume there is an array of objects with the format of a `label` and `imageurl` properties.
   - If a custom interpreter is provided, the function provided will be called for each element in the array, and an object is to be returned with the `label` and `imageurl` properties.
 - `toLabeledFaceDescriptors()`: Converts the dataset into an array of labeled face descriptors. *Note: This is an async function.*
@@ -278,7 +279,7 @@ A facial recognition model.
 #### Methods
 - `recognizeImage(faceimage)`: Recognizes the faces in an image and returns an array of the detected faces and their predicted matched names.
   - The `faceimage` argument must be in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id. (For using a image URL, look to `facerec.getImage()`)
-  - For an example, see [Using the recognizer](#-Using-the-recognizer).
+  - For an example, see [Using the recognizer](#Using-the-recognizer).
 - `matchOneFace(facedescriptor)`: Gets the label that is the most similar to the face descriptor that is provided. Accepts a Float32Array face descriptor, like the one returned from `facerec.facedescriptor()`. Usually used as an internal function, but could be useful.
 - `matchAllFaces(facedescriptors)`: Gets closest labels for all the faces that are present in the face descriptors that are provided. Accepts an array of Float32Array face descriptors, like the one returned from `facerec.facedescriptors()`. Usually used as a internal function, but could be useful.
 - `toJSON()`: Outputs the recognition model in the form of a JSON output. This can be saved and imported using the `FaceRecRecognizer.fromJSON()` static function.
@@ -291,7 +292,7 @@ A helper class to make it easier to accomplish facial recognition on a live webc
 ```
 new FaceRecWebcam(recognizer)
 ```
-- **recognizer:** A [FaceRecRecognizer](#-FaceRecRecognizer) object
+- **recognizer:** A [FaceRecRecognizer](#FaceRecRecognizer) object
 #### Properties
 *None*
 
