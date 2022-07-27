@@ -4,6 +4,56 @@ A JavaScript package designed specifically for facial recognition. A wrapper of 
 
 Compared to faceapi.js, which is centered around several uses, one of them being facial recognition, this package is a more streamlined version with facial recognition in mind.
 
+## Table of Contents
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Initialize](#initialize)
+- [Guide](#guide)
+    - [Creating a dataset](#creating-a-dataset)
+      - [Adding images to the dataset](#adding-images-to-the-dataset)
+      - [Converting to facial data](#converting-to-facial-data)
+      - [Creating the recognizer](#creating-the-recognizer)
+      - [Using the recognizer](#using-the-recognizer)
+        - [Recognizing a image and "drawing" results](#recognizing-a-image-and-drawing-results)
+        - [Getting the raw results from a URL image](#getting-the-raw-results-from-a-url-image)
+- [API](#api)
+  - [*async function:* facerec.init(options)](#async-function-facerecinitoptions)
+      - [Arguments](#arguments)
+      - [Example](#example)
+      - [Options](#options)
+  - [*async function:* facerec.getImage(imageurl)](#async-function-facerecgetimageimageurl)
+      - [Arguments](#arguments)
+      - [Example](#example)
+  - [*async function:* facerec.facedescriptor(faceimage)](#async-function-facerecfacedescriptorfaceimage)
+      - [Arguments](#arguments)
+      - [Example](#example)
+  - [*async function:* facerec.facedescriptors(faceimage)](#async-function-facerecfacedescriptorsfaceimage)
+      - [Arguments](#arguments)
+      - [Example](#example)
+  - [*async function:* facerec.labeledfacedescriptor(label, faceimage)](#async-function-facereclabeledfacedescriptorlabel-faceimage)
+      - [Arguments](#arguments)
+  - [*async function:* facerec.recognizer(arraylabeledfacedescriptor, threshold)](#async-function-facerecrecognizerarraylabeledfacedescriptor-threshold)
+      - [Arguments](#arguments)
+  - [*async function:* facerec.drawResults(results,image,overlay)](#async-function-facerecdrawresultsresultsimageoverlay)
+  - [*async function:* facerec.createOverlay(element)](#async-function-facereccreateoverlayelement)
+- [Reference](#reference)
+  - [FaceRecDataset](#facerecdataset)
+      - [Constructor](#constructor)
+      - [Properties](#properties)
+      - [Methods](#methods)
+  - [FaceRecRecognizer](#facerecrecognizer)
+      - [Constructor](#constructor)
+      - [Properties](#properties)
+      - [Static Methods](#static-methods)
+      - [Methods](#methods)
+  - [FaceRecWebcam](#facerecwebcam)
+      - [Constructor](#constructor)
+      - [Properties](#properties)
+      - [Methods](#methods)
+  - [facerec.debug](#facerecdebug)
+      - [Usage](#usage)
+
+
 # Getting Started
 
 ## Installation
@@ -29,19 +79,28 @@ facerec.init().then(async function(){
 ```
 
 # Guide
-This guide will go over an example of creating and using a facial recognition model. 
+This guide will go from start to finish over an example of creating and using a facial recognition model. 
 
 This example will be using the four characters on [the TV show 'The Office'](https://www.peacocktv.com/stream-tv/the-office/characters) Michael, Jim, Dwight, and Pam. 
 
-#### Creating a dataset
+- [Creating a dataset](#creating-a-dataset)
+- [Adding images to the dataset](#adding-images-to-the-dataset)
+- [Converting to facial data](#converting-to-facial-data)
+- [Creating the recognizer](#creating-the-recognizer)
+- [Using the recognizer](#using-the-recognizer)
+- [Recognizing a image and "drawing" results](#recognizing-a-image-and-drawing-results)
+- [Getting the raw results from a URL image](#getting-the-raw-results-from-a-url-image)
+
+
+### Creating a dataset
 To 'train' the model to recognize faces, you need reference pictures of them. To organize them all, you can create a `FaceRecDataset`.
 ```
-var dataset = new FaceRecDataset()
+var dataset = new facerec.Dataset()
 
 console.log("created dataset:", dataset)
 ```
 
-#### Adding images to the dataset
+### Adding images to the dataset
 There are two methods for adding images to a dataset. One is via `addImageURL()` and the other is `addImages()`.
 
 Adding images via the `addImageURL()` method is ideal, especially when the number of images you want to add is low.
@@ -80,7 +139,7 @@ console.log("dataset images:",dataset.images)
 ```
 Both methods just add images to the dataset's array of images, so they both work the same.
 
-#### Converting to facial data
+### Converting to facial data
 This step takes the images and turns them into what is called a face descriptor, which are unique points on a person's face that can be used to identify them.
 ```js
 var labeleddescriptors = await dataset.toLabeledFaceDescriptors()
@@ -88,7 +147,7 @@ var labeleddescriptors = await dataset.toLabeledFaceDescriptors()
 console.log("descriptors:",labeleddescriptors)
 ```
 
-#### Creating the recognizer
+### Creating the recognizer
 Now you can create the recognizer. It requires a threshold value which means the lowest percent confidence the model can have before returning that face. (1 = 0%, 0 = 100%)
 ```js
 var threshold = 0.3 // 70%
@@ -97,10 +156,10 @@ var recognizer = await facerec.recognizer(labeleddescriptors,threshold)
 console.log("recognizer:",recognizer)
 ```
 
-#### Using the recognizer
+### Using the recognizer
 Then you can use the recognizer in a variety of different ways.
 
-##### Recognizing a image and "drawing" results
+#### Recognizing a image and "drawing" results
 ```js
 var image = document.querySelector("#theofficeimg")
 var imageresults = await recognizer.recognizeImage(image)
@@ -108,7 +167,7 @@ facerec.drawResults(imageresults,image)
 console.log("image results:",imageresults)
 ```
 
-##### Getting the raw results from a URL image
+#### Getting the raw results from a URL image
 To recognize a image from a URL, it needs to be in the form of a `img` element. A URL can be converted using the `facerec.getImage()` function.
 ```js
 var urlimage = await facerec.getImage("https://m.media-amazon.com/images/I/51V0BCZiznL._SY445_.jpg")
@@ -128,6 +187,26 @@ console.log(urlimageresults)
 */
 ```
 
+#### Recognizing results from a webcam feed
+To perform facial recognition on a webcam feed, you can use the `FaceRecWebcam` helper class.
+
+Start by creating the class and providing it with the recognizer.
+```js  
+var webcam = new facerec.Webcam(recognizer)
+console.log("webcam:",webcam)
+```
+
+Then, either have facerec.js create a webcam and overlay or provide a already-created webcam and overlay.
+```js
+await webcam.createWebcam("#webcamcontainer")
+// webcam.customWebcam("#webcamoverlay","#webcamvideo")
+```
+
+After that, either perform facial recognition "on-demand" using the `webcamRecognize()` method or intervally using the `startWebcamRecognition()` method.
+```js
+webcam.webcamRecognize()
+webcam.startWebcamRecognition(500) // Replace 500 with how often you want it to perform facial recognition again. 500 means 500ms or 0.5 seconds.
+```
 
 # API
 
@@ -247,7 +326,7 @@ An internal function used to create an overlay in visualizing the results of a f
 A helper class designed to easily create a dataset of images with labels, and turn it into an array of labeled face descriptors.
 
 #### Constructor
-```new FaceRecDataset()```  
+```new facerec.Dataset()```  
 There are no arguments to the constructor.
 
 #### Properties
@@ -266,14 +345,14 @@ There are no arguments to the constructor.
 A facial recognition model.
 
 #### Constructor
-```new FaceRecRecognizer(arraylabeledfacedescriptor,threshold)```  
+```new facerec.Recognizer(arraylabeledfacedescriptor,threshold)```  
 *Meant to be constructed from `facerec.recognizer()`.*
 
 #### Properties
 - facematcher: The [FaceMatcher object from face-api.js](https://justadudewhohacks.github.io/face-api.js/docs/classes/facematcher.html)
 
 #### Static Methods
-- `fromJSON(json)`: Constructs a `FaceRecRecognizer` object from a saved JSON file. (Saved from `FaceRecRecognizer.toJSON()`)
+- `fromJSON(json)`: Constructs a `FaceRecRecognizer` object from a saved JSON file. (Saved from `facerec.Recognizer.toJSON()`)
 - `fromFaceMatcher(facematcher)`: Constructs a `FaceRecRecognizer` object from a [FaceMatcher class from faceapi.js.](https://justadudewhohacks.github.io/face-api.js/docs/classes/facematcher.html)
 
 #### Methods
@@ -282,7 +361,7 @@ A facial recognition model.
   - For an example, see [Using the recognizer](#Using-the-recognizer).
 - `matchOneFace(facedescriptor)`: Gets the label that is the most similar to the face descriptor that is provided. Accepts a Float32Array face descriptor, like the one returned from `facerec.facedescriptor()`. Usually used as an internal function, but could be useful.
 - `matchAllFaces(facedescriptors)`: Gets closest labels for all the faces that are present in the face descriptors that are provided. Accepts an array of Float32Array face descriptors, like the one returned from `facerec.facedescriptors()`. Usually used as a internal function, but could be useful.
-- `toJSON()`: Outputs the recognition model in the form of a JSON output. This can be saved and imported using the `FaceRecRecognizer.fromJSON()` static function.
+- `toJSON()`: Outputs the recognition model in the form of a JSON output. This can be saved and imported using the `facerec.Recognizer.fromJSON()` static function.
 
 
 ## FaceRecWebcam
@@ -290,14 +369,14 @@ A helper class to make it easier to accomplish facial recognition on a live webc
 
 #### Constructor
 ```
-new FaceRecWebcam(recognizer)
+new facerec.Webcam(recognizer)
 ```
 - **recognizer:** A [FaceRecRecognizer](#FaceRecRecognizer) object
 #### Properties
 *None*
 
 #### Methods
-- `createWebcam(containerquery)`: Creates a webcam window and overlay automatically. If you wish to use a custom webcam window and overlay, use `FaceRecWebcam.customWebcam()`.
+- `createWebcam(containerquery)`: Creates a webcam window and overlay automatically. If you wish to use a custom webcam window and overlay, use `facerec.Webcam.customWebcam()`.
   - The `containerquery` argument requires a valid selector query for the container of the webcam. (Such as the one used in `document.querySelector` or jQuery) 
 - `customWebcam(webcamoverlay,webcamvideo)`: Set a custom webcam overlay and webcam window. Both arguments should be an HTML element.
 - `startWebcamRecognition(updaterate)`: Starts recognizing and visualizing facial recognition on the webcam every \*`updaterate`\* milliseconds.

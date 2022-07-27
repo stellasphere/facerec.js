@@ -169,7 +169,7 @@ facerec.recognizer = async function(arraylabeledfacedescriptor,threshold) {
   if(facerec.debug) console.log("new recognizer:",recognizer)
   
   if(facerec.debug) console.groupEnd("FaceRec: recognizer")
-  return (FaceRecRecognizer.fromFaceMatcher(recognizer))
+  return (facerec.Recognizer.fromFaceMatcher(recognizer))
 }
 
 facerec.drawResults = async function(results,image,overlay){
@@ -244,7 +244,7 @@ facerec.createOverlay = function(element) {
   }
 }
 
-class FaceRecDataset {
+facerec.Dataset = class FaceRecDataset {
   constructor() {
     this.images = []
   }
@@ -255,7 +255,7 @@ class FaceRecDataset {
     })
   }
   addImages = function(arrayoflabeledimages,custominterpreter) {
-    if(facerec.debug) console.groupCollapsed("FaceRecDataset: addImages")
+    if(facerec.debug) console.groupCollapsed("facerec.Dataset: addImages")
 
     if(facerec.debug) console.log("labeledimages:",arrayoflabeledimages)
 
@@ -280,11 +280,11 @@ class FaceRecDataset {
     }
     if(facerec.debug) console.groupEnd("labeledimagesiterator")
     
-    if(facerec.debug) console.groupEnd("FaceRecDataset: addImages")
+    if(facerec.debug) console.groupEnd("facerec.Dataset: addImages")
   }
   toLabeledFaceDescriptors = async function() {
     if(!facerec.initalized) throw Error("facerec.js not initalized")
-    if(facerec.debug) console.groupCollapsed("FaceRecDataset: toLabeledFaceDescriptors")
+    if(facerec.debug) console.groupCollapsed("facerec.Dataset: toLabeledFaceDescriptors")
     var arraylabeledfacedescriptors = []
 
     if(facerec.debug) console.log("images:",this.images)
@@ -301,33 +301,33 @@ class FaceRecDataset {
       if(facerec.debug) console.timeEnd("image")
     }
   
-    if(facerec.debug) console.groupEnd("FaceRecDataset: toLabeledFaceDescriptors")
+    if(facerec.debug) console.groupEnd("facerec.Dataset: toLabeledFaceDescriptors")
     return arraylabeledfacedescriptors
   } 
 }
 
-class FaceRecRecognizer {
+facerec.Recognizer = class FaceRecRecognizer {
   constructor(arraylabeledfacedescriptor,threshold) {
-    if(facerec.debug) console.groupCollapsed("FaceRecRecognizer: constructor")
+    if(facerec.debug) console.groupCollapsed("facerec.Recognizer: constructor")
   
     var recognizer = new faceapi.FaceMatcher(arraylabeledfacedescriptor, threshold)
     if(facerec.debug) console.log("new recognizer:",recognizer)
     
-    if(facerec.debug) console.groupEnd("FaceRecRecognizer: constructor")
+    if(facerec.debug) console.groupEnd("facerec.Recognizer: constructor")
     
     this.facematcher = recognizer
   }
   static fromFaceMatcher(facematcher) {
-    return new FaceRecRecognizer(facematcher.labeledDescriptors,facematcher.distanceThreshold)
+    return new facerec.Recognizer(facematcher.labeledDescriptors,facematcher.distanceThreshold)
   }
   static fromJSON(savedjson) {
     var facematcher = faceapi.FaceMatcher.fromJSON(savedjson)
-    var recognizer = FaceRecRecognizer.fromFaceMatcher(facematcher)
+    var recognizer = facerec.Recognizer.fromFaceMatcher(facematcher)
     return recognizer
   }
   matchOneFace = function(facedescription) {
     if(!facerec.initalized) throw Error("facerec.js not initalized")
-    if(facerec.debug) console.groupCollapsed("FaceRecRecognizer: matchOneFace")
+    if(facerec.debug) console.groupCollapsed("facerec.Recognizer: matchOneFace")
     
     var facematcher = this.facematcher
     if(facerec.debug) console.log("facematcher:",facematcher)
@@ -350,12 +350,12 @@ class FaceRecRecognizer {
     }
     if(facerec.debug) console.log("final result:",finalresult)
     
-    if(facerec.debug) console.groupEnd("FaceRecRecognizer: matchOneFace")
+    if(facerec.debug) console.groupEnd("facerec.Recognizer: matchOneFace")
     return finalresult
   }
   matchAllFaces = function(facedescriptors) {
     if(!facerec.initalized) throw Error("facerec.js not initalized")
-    if(facerec.debug) console.groupCollapsed("FaceRecRecognizer: matchAllFaces")
+    if(facerec.debug) console.groupCollapsed("facerec.Recognizer: matchAllFaces")
 
     if(facerec.debug) console.log("face descriptions:",facedescriptors)
     
@@ -372,7 +372,7 @@ class FaceRecRecognizer {
     })
     if(facerec.debug) console.log("recognition results:",results)
     
-    if(facerec.debug) console.groupEnd("FaceRecRecognizer: matchAllFaces")
+    if(facerec.debug) console.groupEnd("facerec.Recognizer: matchAllFaces")
     return results
   }
   recognizeImage = async function(faceimage) {
@@ -386,9 +386,9 @@ class FaceRecRecognizer {
   }
 }
 
-class FaceRecWebcam {
+facerec.Webcam = class FaceRecWebcam {
   constructor(recognizer) {
-    if(!(recognizer instanceof FaceRecRecognizer)) throw Error("Not a FaceRecRecognizer")
+    if(!(recognizer instanceof facerec.Recognizer)) throw Error("Not a FaceRecRecognizer")
 
     this.recognizer = recognizer
   }
@@ -431,11 +431,11 @@ class FaceRecWebcam {
     setInterval(this.webcamRecognize.bind(this), updaterate)
   }
   webcamRecognize = async function(){
-    if(facerec.debug) console.groupCollapsed("FaceRecWebcam: webcamRecognize")
+    if(facerec.debug) console.groupCollapsed("facerec.Webcam: webcamRecognize")
     
     var results = await this.recognizer.recognizeImage(this.webcamvideo)
     facerec.drawResults(results,this.webcamvideo,this.webcamoverlay)
     
-    if(facerec.debug) console.groupEnd("FaceRecWebcam: webcamRecognize")
+    if(facerec.debug) console.groupEnd("facerec.Webcam: webcamRecognize")
   }
 }
