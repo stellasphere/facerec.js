@@ -63,6 +63,9 @@ facerec.js has a heavy dependency on [faceapi.js](https://justadudewhohacks.gith
 <script src="https://cdn.jsdelivr.net/gh/stellasphere/facerec.js@main/facerec.js"></script>
 ```
 
+### Node.js Compatibility
+facerec.js is now compatible for use on Node.js. Documentation for use on Node.js is coming soon. Until it is published on NPM, it is possible to download the facerec.js file from the GitHub repo and `require()` it and install the dependencies. 
+
 ## Initialize
 facerec.js needs to initialize first.
 ```js
