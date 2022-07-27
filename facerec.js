@@ -77,9 +77,18 @@ facerec.getImage = async function(imageurl) {
   if(facerec.debug) console.groupCollapsed("FaceRec: getImage")
 
   if(facerec.debug) console.log("getting image:",imageurl)
-  var image = await faceapi.fetchImage(imageurl).catch(function(err){
+
+  var image 
+
+  if(typeof global == 'undefined') {
+    image = await faceapi.fetchImage(imageurl).catch(async function(err){
     throw Error(`Could not fetch image: ${imageurl}. ${err}`)
   })
+  } else {
+    image = await canvas.loadImage(imageurl).catch(function(err) {
+    throw Error(`Could not fetch image: ${imageurl}. ${err}`)
+  })
+  }
   
   if(facerec.debug) console.groupEnd("FaceRec: getImage")
   
@@ -210,6 +219,40 @@ facerec.drawResults = async function(results,image,overlay){
   })
   
   if(facerec.debug) console.groupEnd("FaceRec: drawResults")
+}
+
+facerec.resultsImage = function(results,image) {
+  if(facerec.debug) console.groupCollapsed("FaceRec: resultsImage")
+  
+  var resultimage = faceapi.createCanvasFromMedia(image)
+  if(facerec.debug) console.log("result canvas:",resultimage)
+
+  var detections = results.map(result => result.description.detection)
+  if(facerec.debug) console.log("detections:",detections)
+  
+  var landmarks = results.map(result => result.description.landmarks)
+  if(facerec.debug) console.log("landmarks:",landmarks)
+  
+  faceapi.draw.drawDetections(resultimage, detections)
+  faceapi.draw.drawFaceLandmarks(resultimage, landmarks)
+
+  results.forEach((result, i) => {
+    if(facerec.debug) console.log("result:",result)
+    
+    const box = result.description.detection.box
+    const text = facerec.options.overlaytext(result)
+    const drawBox = new faceapi.draw.DrawBox(box, { label: text })
+    
+    drawBox.draw(resultimage)
+  })
+  
+  if(facerec.debug) console.log("result canvas:",resultimage)
+
+  var image = resultimage.toDataURL()
+  if(facerec.debug) console.log("result image:",image)
+  
+  if(facerec.debug) console.groupEnd("FaceRec: resultsImage")
+  return image
 }
 
 facerec.createOverlay = function(element) {
@@ -438,4 +481,8 @@ facerec.Webcam = class FaceRecWebcam {
     
     if(facerec.debug) console.groupEnd("facerec.Webcam: webcamRecognize")
   }
+}
+
+if(typeof global !== 'undefined') {
+  module.exports = facerec
 }
