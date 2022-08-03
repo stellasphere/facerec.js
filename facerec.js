@@ -157,17 +157,25 @@ facerec.facedescriptors = async function(faceimage) {
   return facedescriptors
 }
 
-facerec.labeledfacedescriptor = async function(label,faceimage) {
+facerec.labeledfacedescriptor = async function(label,faceimages) {
   if(!facerec.initalized) throw Error("facerec.js not initalized")
   if(facerec.debug) console.groupCollapsed("FaceRec: labeledfacedescriptor")
-  var facedescriptor = [(await this.facedescriptor(faceimage)).descriptor]
-  if(facerec.debug) console.log("face descriptor:",facedescriptor)
+
+  if(!Array.isArray(faceimages)) faceimages = [faceimages]
+
   
-  var labeledfacedescriptor = new faceapi.LabeledFaceDescriptors(label, facedescriptor)
+  var facedescriptors = faceimages.map(async function(faceimage){
+    var facedescriptor = await this.facedescriptor(faceimage)
+    return facedescriptor.descriptor
+  })
+    
+  if(facerec.debug) console.log("face descriptors:",facedescriptors)
+  
+  var labeledfacedescriptors = new faceapi.LabeledFaceDescriptors(label, facedescriptors)
   if(facerec.debug) console.log("labeled face descriptor:",labeledfacedescriptor)
 
   if(facerec.debug) console.groupEnd("FaceRec: labeledfacedescriptor")
-  return labeledfacedescriptor
+  return labeledfacedescriptors
 }
 
 facerec.recognizer = async function(arraylabeledfacedescriptor,threshold) {
