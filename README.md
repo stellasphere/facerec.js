@@ -1,3 +1,4 @@
+
 # facerec.js
 
 A JavaScript package designed specifically for facial recognition. A wrapper of [faceapi.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html) and has a heavy dependency on it.
@@ -32,6 +33,12 @@ Compared to faceapi.js, which is centered around several uses, one of them being
   - [FaceRecRecognizer](#facerecrecognizer)
   - [FaceRecWebcam](#facerecwebcam)
   - [facerec.debug](#facerecdebug)
+- [FAQ](#faq)
+  - [How do I customize the label text in the overlay results?](#how-do-i-customize-the-label-text-in-the-overlay-results)
+  - [Do I have to train the model every time the page loads?](#do-i-have-to-train-the-model-every-time-the-page-loads)
+  - [How do I save a recognizer?](#how-do-i-save-a-recognizer)
+  - [How do I use a saved recognizer?](#how-do-i-use-a-saved-recognizer)
+
 
 
 
@@ -49,6 +56,8 @@ facerec.js is now compatible for use on Node.js. Documentation for use on Node.j
 
 ## Initialize
 facerec.js needs to initialize first.
+
+Here are three examples of how to initalize facerec.js
 ```js
 await facerec.init() // default init using await
 
@@ -144,12 +153,26 @@ console.log("recognizer:",recognizer)
 Then you can use the recognizer in a variety of different ways.
 
 #### Recognizing a image and "drawing" results
+The first option is to have facerec.js overlay a graphic with the results of the facial recognition.
 ```js
 var image = document.querySelector("#theofficeimg")
 var imageresults = await recognizer.recognizeImage(image)
 facerec.drawResults(imageresults,image)
 console.log("image results:",imageresults)
 ```
+
+Another option for visualizing results is to use the `facerec.resultsImage()` function. This function, as opposed to the other one, creates a brand new image file with the results graphic.
+
+```js
+var image = document.querySelector("#theofficeimg")
+var result = await recognizer.recognizeImage(image)
+console.log("result:",result)
+
+var resultimage = facerec.resultsImage(result,image)
+console.log("result image url:",resultimage)
+```
+
+> For both these options, you can customize what gets displayed in the label (ex: 'Jim Halpert (100%)') in the option called `overlaytext`.
 
 #### Getting the raw results from a URL image
 To recognize a image from a URL, it needs to be in the form of a `img` element. A URL can be converted using the `facerec.getImage()` function.
@@ -196,9 +219,11 @@ webcam.startWebcamRecognition(500) // Replace 500 with how often you want it to 
 
 ## *async function:* facerec.init(options)
 Initalizes facerec.js
-#### Arguments
+
+**Arguments**
 - options: A optional argument for the options of facerec.js
-#### Example
+
+**Example**
 ```js
 await facerec.init({
   modelsurl: "/models",
@@ -211,7 +236,7 @@ await facerec.init({
   }
 })
 ```
-#### Options
+**Options**
 - **modelsurl:** Location of the directory where the facial recognition models are located.
 - **TinyFaceDetector, SsdMobilenetv1, Mtcnn:** Option to load that model
 - **modelpriority:** Priority of the model used. If a face can't be detected using the first model, it will try using other models and go down the list.
@@ -221,9 +246,11 @@ await facerec.init({
 
 ## *async function:* facerec.getImage(imageurl)
 Almost all image inputs in facerec.js are required to be in an HTML `img` element format. *Except the datasets* This function converts a URL into an HTML image element.
-#### Arguments
+
+**Arguments**
 - imageurl: A URL (either relative or absolute URL) for a image.
-#### Example
+
+**Example**
 ```js
 var relativeimage = await facerec.getImage("image.png") // relative
 var absoluteimage = await facerec.getImage("https://website.com/image.png") // absolute
@@ -237,10 +264,10 @@ Gets the identifying features/characteristics of a face. If there are multiple f
 
 If you have more than one model specified in `modelpriority`, it will default to the first model, then use subsequent models if a face is not found.
 
-#### Arguments
+**Arguments**
 - faceimage: A image in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id.  (For using a image URL, look to `facerec.getImage()`)
 
-#### Example
+**Example**
 ```
 // with a element id
 var result = await facerec.facedescriptor("elementid")
@@ -259,10 +286,11 @@ var result = await facerec.facedescriptor(image)
 
 ## *async function:* facerec.facedescriptors(faceimage)
 Gets the identifying features/characteristics of all faces in a image. 'Multi-face' version of `facerec.facedescriptor()`.  
-#### Arguments
+
+**Arguments**
 - faceimage: A image in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id. (For using a image URL, look to `facerec.getImage()`)
 
-#### Example
+**Example**
 ```
 // with a element id
 var result = await facerec.facedescriptors("elementid")
@@ -281,7 +309,8 @@ var result = await facerec.facedescriptors(image)
 
 ## *async function:* facerec.labeledfacedescriptor(label, faceimage)
 Creates a labeled version of normal face descriptors. An array of labeled face descriptors are fed into `facerec.recognizer()` to create a recognition model.
-#### Arguments
+
+**Arguments**
 - label: A label to attach to the face, usually a name. *Ex: 'Alex'*
 - faceimage: A image in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id. (For using a image URL, look to `facerec.getImage()`)
   
@@ -290,7 +319,8 @@ Creates a labeled version of normal face descriptors. An array of labeled face d
 
 ## *async function:* facerec.recognizer(arraylabeledfacedescriptor, threshold)
 Creates the facial recognition model.
-#### Arguments
+
+**Arguments**
 - arraylabeledfacedescriptor: Array of [LabeledFaceDescriptors](#LabeledFaceDescriptors) objects. (Either from a array created by the `toLabeledFaceDescriptors()` function on a [`FaceRecDataset`](#FaceRecDataset) or from a array created by objects returned from `facerec.labeledfacedescriptor()`)
 - threshold: The minimum confidence needed to return a result. A value from 0 (100% confidence) to 1 (0% confidence) is required. *Ex: 0.3 for 70%* 
 
@@ -309,14 +339,14 @@ An internal function used to create an overlay in visualizing the results of a f
 ## FaceRecDataset
 A helper class designed to easily create a dataset of images with labels, and turn it into an array of labeled face descriptors.
 
-#### Constructor
+**Constructor**
 ```new facerec.Dataset()```  
 There are no arguments to the constructor.
 
-#### Properties
+**Properties**
 - images: Contains an array of objects with the label and images.
 
-#### Methods
+**Methods**
 - `addImageURL(label,imageurl)`: Accepts a label and image url and adds it to the dataset.
 - `addImages(arrayoflabeledimages,custominterpreter)`: Accepts an array of images and adds it to the dataset. (See [Adding images to the dataset](#Adding-images-to-the-dataset) for a working example)
   - Unless a custom interpreter is used, it will assume there is an array of objects with the format of a `label` and `imageurl` properties.
@@ -328,18 +358,18 @@ There are no arguments to the constructor.
 ## FaceRecRecognizer
 A facial recognition model.
 
-#### Constructor
+**Constructor**
 ```new facerec.Recognizer(arraylabeledfacedescriptor,threshold)```  
 *Meant to be constructed from `facerec.recognizer()`.*
 
-#### Properties
+**Properties**
 - facematcher: The [FaceMatcher object from face-api.js](https://justadudewhohacks.github.io/face-api.js/docs/classes/facematcher.html)
 
-#### Static Methods
+**Static Methods**
 - `fromJSON(json)`: Constructs a `FaceRecRecognizer` object from a saved JSON file. (Saved from `facerec.Recognizer.toJSON()`)
 - `fromFaceMatcher(facematcher)`: Constructs a `FaceRecRecognizer` object from a [FaceMatcher class from faceapi.js.](https://justadudewhohacks.github.io/face-api.js/docs/classes/facematcher.html)
 
-#### Methods
+**Methods**
 - `recognizeImage(faceimage)`: Recognizes the faces in an image and returns an array of the detected faces and their predicted matched names.
   - The `faceimage` argument must be in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id. (For using a image URL, look to `facerec.getImage()`)
   - For an example, see [Using the recognizer](#Using-the-recognizer).
@@ -351,15 +381,15 @@ A facial recognition model.
 ## FaceRecWebcam
 A helper class to make it easier to accomplish facial recognition on a live webcam feed.
 
-#### Constructor
+**Constructor**
 ```
 new facerec.Webcam(recognizer)
 ```
 - **recognizer:** A [FaceRecRecognizer](#FaceRecRecognizer) object
-#### Properties
+**Properties**
 *None*
 
-#### Methods
+**Methods**
 - `createWebcam(containerquery)`: Creates a webcam window and overlay automatically. If you wish to use a custom webcam window and overlay, use `facerec.Webcam.customWebcam()`.
   - The `containerquery` argument requires a valid selector query for the container of the webcam. (Such as the one used in `document.querySelector` or jQuery) 
 - `customWebcam(webcamoverlay,webcamvideo)`: Set a custom webcam overlay and webcam window. Both arguments should be an HTML element.
@@ -371,9 +401,76 @@ new facerec.Webcam(recognizer)
 
 ## facerec.debug
 True or false boolean setting for debug messages in the console. When enabled, it will display a lot of console messages. To help with it, console messages are displayed in a collapsed group, but when debug is enabled errors may get hidden within the collapsed groups, so please be careful of that.
-#### Usage
+
+**Usage**
 ```js
 facerec.debug = true // On
 facerec.debug = false // Off
 ```
 
+# FAQ
+
+## How do I customize the label text in the overlay results?
+You can customize the label text in the options under the one called `overlaytext`.
+
+The option works as a function, with whatever it returns coming up as the label.
+
+You can customize it by defining it in the initalization function like so:
+```js
+facerec.init({
+  overlaytext: function(result) {
+    return `This face is ${result.label}`
+  }
+})
+```
+> If a facial recognition result gave back the results below into the function above, the label would say "This face is Jim Halpert"
+
+The `result` object has several properties to customize the label: (This is a example with a sample detection of Jim Halpert as the label)
+```js
+{
+  "label": "Jim Halpert",
+  "distance": 0,
+  "confidence": 1,
+  "percentconfidence": 100,
+  "description": {
+    "detection": {...},
+    "landmarks": {...},
+    "unshiftedLandmarks": {...},
+    "alignedRect": {...},
+    "descriptor": {...}
+  }
+}
+```
+- `label`: The label/name that was assigned to the face when it was trained.
+- `distance`: The computed "distance" between the detected face and the one it was trained on. (0 means a exact match, 1 means a complete mismatch)
+- `confidence`: The confidence of the model that it is a match to the one it was trained on. This value is a decimal percentage (1 = 100%, 0.5 = 50%, 0 = 0%)
+- `percentageconfidence`: The confidence in percentage form. This value is the `confidence` value multiplied times 100 and rounded.
+- `description`: Values provided from face-api.js
+
+## Do I have to train the model every time the page loads?
+No. You can save the JSON somewhere and load it in, or run facerec.js in Node.js and start a remote API. 
+
+See: [How do I save a recognizer?](#how-do-i-save-a-recognizer)  
+See: [Node.js Compatibility](#nodejs-compatibility)
+
+## How do I save a recognizer?
+Using the `recognizer.toJSON()` function. This function turns the recognizer into a raw JSON file, which you can use to "import" into facerec.js. 
+
+```js
+var json = recognizer.toJSON()
+```
+> `recognizer` should be replaced by whatever variable has your facerec.js recognizer.
+
+From there, you can save it as a variable, text file, etc. 
+
+See: [How do I use a saved recognizer?](#how-do-i-use-a-saved-recognizer)  
+See: [FaceRecRecognizer](#facerecrecognizer) *Look under methods for `toJSON()`*
+
+
+## How do I use a saved recognizer? 
+Using the `facerec.Recognizer.fromJSON()` function. 
+
+```js
+var recognizer = facerec.Recognizer.fromJSON(json)
+```
+> `json` should be whatever variable has your facerec.js recognizer.
