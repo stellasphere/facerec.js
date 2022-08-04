@@ -1,5 +1,6 @@
 if(typeof global !== 'undefined') {
-  global.faceapi = require("face-api.js")
+  global.tf = require('@tensorflow/tfjs-node')
+  global.faceapi = require('@vladmandic/face-api')
   global.fetch = require("node-fetch")
   global.canvas = require("canvas")
   global.Canvas = require("canvas").Canvas

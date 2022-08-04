@@ -4,6 +4,8 @@
   "description": "A JavaScript package designed specifically for facial recognition. A wrapper of [faceapi.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html) and has a heavy dependency on it.",
   "main": "facerec.js",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^3.19.0",
+    "@vladmandic/face-api": "^1.7.1",
     "abbrev": "^1.1.1",
     "agent-base": "^6.0.2",
     "ansi-regex": "^5.0.1",
