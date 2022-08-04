@@ -165,7 +165,7 @@ facerec.labeledfacedescriptor = async function(label,faceimages) {
 
   
   var facedescriptors = faceimages.map(async function(faceimage){
-    var facedescriptor = await this.facedescriptor(faceimage)
+    var facedescriptor = await facerec.facedescriptor(faceimage)
     return facedescriptor.descriptor
   })
     
