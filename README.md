@@ -38,6 +38,8 @@ Compared to faceapi.js, which is centered around several uses, one of them being
   - [Do I have to train the model every time the page loads?](#do-i-have-to-train-the-model-every-time-the-page-loads)
   - [How do I save a recognizer?](#how-do-i-save-a-recognizer)
   - [How do I use a saved recognizer?](#how-do-i-use-a-saved-recognizer)
+  - [How to fix the libuuid error in Repl.it](#how-to-fix-the-libuuid-error-in-replit)
+
 
 
 
@@ -474,3 +476,26 @@ Using the `facerec.Recognizer.fromJSON()` function.
 var recognizer = facerec.Recognizer.fromJSON(json)
 ```
 > `json` should be whatever variable has your facerec.js recognizer.
+
+## How to fix the libuuid error in Repl.it
+When using facerec.js with Node.js on Repl.it, an error saying something like `Error: libuuid.so.1: cannot open shared object file: No such file or directory` might come up. 
+
+If this happens, you can resolve this issue by modifying the `replit.nix` file.
+
+Start by clicking on the 'Show hidden files' option when you click on the three dot icon in the Files tab of the sidebar. (Upper left corner, next to the buttons to create a new file and create a new folder)
+
+Under config files, open the `replit.nix` file and replace the contents with the following:
+
+```nix
+{ pkgs }: {
+    deps = [
+      pkgs.nodejs-16_x
+        pkgs.nodePackages.typescript-language-server
+        pkgs.yarn
+        pkgs.replitPackages.jest
+    ];
+    env = {
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.libuuid];
+    };
+}
+```
