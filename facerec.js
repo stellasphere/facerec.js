@@ -234,6 +234,7 @@ facerec.resultsImage = function(results,image,options) {
 
   options = options || {}
   options = Object.assign(defaultoptions,options)
+  if(facerec.debug) console.log("results image options:",options)
   
   var resultimage = faceapi.createCanvasFromMedia(image)
   if(facerec.debug) console.log("result canvas:",resultimage)
