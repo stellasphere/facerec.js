@@ -254,8 +254,11 @@ facerec.resultsImage = function(results,image,options) {
     const box = result.description.detection.box
     const text = facerec.options.overlaytext(result)
 
-    options.label = text
-    const drawBox = new faceapi.draw.DrawBox(box, options)
+    const drawBox = new faceapi.draw.DrawBox(box, {
+      boxColor: options.linecolor,
+      lineWidth: options.linewidth,
+      label: text
+    })
     
     drawBox.draw(resultimage)
   })
