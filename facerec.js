@@ -245,8 +245,8 @@ facerec.resultsImage = function(results,image,options) {
   var landmarks = results.map(result => result.description.landmarks)
   if(facerec.debug) console.log("landmarks:",landmarks)
   
-  faceapi.draw.drawDetections(resultimage, detections)
-  faceapi.draw.drawFaceLandmarks(resultimage, landmarks)
+  if(options.drawdetections) faceapi.draw.drawDetections(resultimage, detections)
+  if(options.drawlandmarks) faceapi.draw.drawFaceLandmarks(resultimage, landmarks)
 
   results.forEach((result, i) => {
     if(facerec.debug) console.log("result:",result)
