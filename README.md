@@ -217,7 +217,7 @@ webcam.startWebcamRecognition(500) // Replace 500 with how often you want it to 
 
 # API
 
-## *async function:* facerec.init(options)
+## *async function:* facerec.init(?options)
 Initalizes facerec.js
 
 **Arguments**
@@ -325,6 +325,42 @@ Creates the facial recognition model.
 - threshold: The minimum confidence needed to return a result. A value from 0 (100% confidence) to 1 (0% confidence) is required. *Ex: 0.3 for 70%* 
 
 **Returns:** A [FaceRecRecognizer](#FaceRecRecognizer) object
+
+
+
+## *async function:* facerec.resultsImage(results,image,?options)
+
+**Arguments**
+- results: A result returned from `FaceRecRecognizer.recognize()`
+- image: The image that was used to produce the results. A image in the form of a HTML image, video or canvas element, a [tf.Tensor3D object](https://js.tensorflow.org/api/latest/#tensor3d) or a string with the element id. (For using a image URL, look to `facerec.getImage()`)
+- options: Optional argument for providing options for customizing the image. (See below)
+
+
+**Options**
+
+The default options object:
+```js
+var defaultoptions = {
+  drawdetections: true, // Whether to draw the box around detected faces
+  drawlandmarks: true, // Whether to draw the landmarks (dots) on the faces
+  linecolor: 'rgba(0, 0, 255, 1)', // What color to draw the box
+  linewidth: 2 // Width of the box border
+}
+```
+
+> Note: These options do not provide a option to customize the label. That is set using the `overlaytext` option in the initalization.  See: [How do I customize the label text in the overlay results?](#how-do-i-customize-the-label-text-in-the-overlay-results) and [Initialize](#initialize)
+
+**Example**
+```js
+var resultimageoptions = {
+  drawdetections: false,
+  drawlandmarks: false,
+  linecolor: 'red',
+  linewidth: 1
+}
+var resultimage = facerec.resultsImage(result,image,resultimageoptions)
+```
+
 
 
 ## *async function:* facerec.drawResults(results,image,overlay)
