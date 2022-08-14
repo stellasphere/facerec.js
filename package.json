@@ -1,6 +1,6 @@
 {
   "name": "facerec",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A JavaScript package designed specifically for facial recognition. A wrapper of [faceapi.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html) and has a heavy dependency on it.",
   "main": "facerec.js",
   "dependencies": {

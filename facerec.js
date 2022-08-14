@@ -222,8 +222,19 @@ facerec.drawResults = async function(results,image,overlay){
   if(facerec.debug) console.groupEnd("FaceRec: drawResults")
 }
 
-facerec.resultsImage = function(results,image) {
+facerec.resultsImage = function(results,image,options) {
   if(facerec.debug) console.groupCollapsed("FaceRec: resultsImage")
+
+  var defaultoptions = {
+    drawdetections: true,
+    drawlandmarks: true,
+    linecolor: 'rgba(0, 0, 255, 1)',
+    linewidth: 2
+  }
+
+  options = options || {}
+  options = Object.assign(defaultoptions,options)
+  if(facerec.debug) console.log("results image options:",options)
   
   var resultimage = faceapi.createCanvasFromMedia(image)
   if(facerec.debug) console.log("result canvas:",resultimage)
@@ -234,15 +245,20 @@ facerec.resultsImage = function(results,image) {
   var landmarks = results.map(result => result.description.landmarks)
   if(facerec.debug) console.log("landmarks:",landmarks)
   
-  faceapi.draw.drawDetections(resultimage, detections)
-  faceapi.draw.drawFaceLandmarks(resultimage, landmarks)
+  if(options.drawdetections) faceapi.draw.drawDetections(resultimage, detections)
+  if(options.drawlandmarks) faceapi.draw.drawFaceLandmarks(resultimage, landmarks)
 
   results.forEach((result, i) => {
     if(facerec.debug) console.log("result:",result)
     
     const box = result.description.detection.box
     const text = facerec.options.overlaytext(result)
-    const drawBox = new faceapi.draw.DrawBox(box, { label: text })
+
+    const drawBox = new faceapi.draw.DrawBox(box, {
+      boxColor: options.linecolor,
+      lineWidth: options.linewidth,
+      label: text
+    })
     
     drawBox.draw(resultimage)
   })
