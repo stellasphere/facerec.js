@@ -47,14 +47,26 @@ Compared to faceapi.js, which is centered around several uses, one of them being
 # Getting Started
 
 ## Installation
-facerec.js has a heavy dependency on [faceapi.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html).
+facerec.js has a dependency on [face-api.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html).
 ```html
 <script src="https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/dist/face-api.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/stellasphere/facerec.js@main/facerec.js"></script>
 ```
 
 ### Node.js Compatibility
-facerec.js is now compatible for use on Node.js. Documentation for use on Node.js is coming soon. Until it is published on NPM, it is possible to download the facerec.js file from the GitHub repo and `require()` it and install the dependencies. 
+[View NPM page here](https://www.npmjs.com/package/facerec)
+
+facerec.js has been written with Node.js compatibility in mind, and all that is required to run facerec.js on Node.js is to install it with
+```bash
+npm install facerec
+```
+
+and
+
+```node
+const facerec = require("facerec");
+```
+
 
 ## Initialize
 facerec.js needs to initialize first.
