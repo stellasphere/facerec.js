@@ -224,7 +224,11 @@ facerec.drawResults = async function(results,image,overlay){
     
     const box = resizeddescriptions[i].detection.box
     const text = facerec.options.label.text(match)
-    const drawBox = new faceapi.draw.DrawBox(box, { label: text })
+    const drawBox = new faceapi.draw.DrawBox(box, {
+      label: text,
+      boxColor: facerec.options.label.linecolor,
+      lineWidth: facerec.options.label.linewidth,
+    })
     
     drawBox.draw(overlay)
   })
@@ -309,6 +313,23 @@ facerec.createOverlay = function(element) {
   return {
     overlay,
     originalcontent,
+  }
+}
+
+facerec.internal = {
+  drawBoxSettings: function(result) {
+    var text = facerec.options.label.text(result)
+
+    var labeloptions = {
+      
+    }
+    
+    return {
+      boxColor: facerec.options.label.linecolor,
+      lineWidth: facerec.options.label.linewidth,
+      drawLabelOptions: labeloptions,
+      label: text
+    }
   }
 }
 
