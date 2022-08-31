@@ -231,9 +231,7 @@ facerec.resultsImage = function(results,image,options) {
 
   var defaultoptions = {
     drawdetections: true,
-    drawlandmarks: true,
-    linecolor: 'rgba(0, 0, 255, 1)',
-    linewidth: 2
+    drawlandmarks: true
   }
 
   options = options || {}
@@ -259,8 +257,8 @@ facerec.resultsImage = function(results,image,options) {
     const text = facerec.options.label.text(result)
 
     const drawBox = new faceapi.draw.DrawBox(box, {
-      boxColor: options.linecolor,
-      lineWidth: options.linewidth,
+      boxColor: facerec.options.label.linecolor,
+      lineWidth: facerec.options.label.linewidth,
       label: text
     })
     
