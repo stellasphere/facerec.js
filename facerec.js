@@ -215,7 +215,7 @@ facerec.drawResults = async function(results,image,overlay){
     if(facerec.debug) console.log("match:",match)
     
     const box = resizeddescriptions[i].detection.box
-    const text = facerec.options.overlaytext(match)
+    const text = facerec.options.label.text(match)
     const drawBox = new faceapi.draw.DrawBox(box, { label: text })
     
     drawBox.draw(overlay)
@@ -254,7 +254,7 @@ facerec.resultsImage = function(results,image,options) {
     if(facerec.debug) console.log("result:",result)
     
     const box = result.description.detection.box
-    const text = facerec.options.overlaytext(result)
+    const text = facerec.options.label.text(result)
 
     const drawBox = new faceapi.draw.DrawBox(box, {
       boxColor: options.linecolor,
