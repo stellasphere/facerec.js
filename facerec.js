@@ -22,8 +22,10 @@ facerec.options = {
   SsdMobilenetv1: true,
   Mtcnn: false,
   modelpriority: ["SsdMobilenetv1"],
-  overlaytext: function(result) {
-    return `${result.label} (${result.percentconfidence}%)`
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    }
   }
 }
 
