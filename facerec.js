@@ -25,7 +25,9 @@ facerec.options = {
   label: {
     text: function(result) {
       return `${result.label} (${result.percentconfidence}%)`
-    }
+    },
+    linecolor: 'rgba(0, 0, 255, 1)',
+    linewidth: 2
   }
 }
 
