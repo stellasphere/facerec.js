@@ -27,7 +27,13 @@ facerec.options = {
       return `${result.label} (${result.percentconfidence}%)`
     },
     linecolor: 'rgba(0, 0, 255, 1)',
-    linewidth: 2
+    linewidth: 2,
+    textanchorposition: "TOP_LEFT",
+    textbackgroundcolor: "rgba(0, 0, 0, 0.5)",
+    textcolor: "rgba(255, 255, 255, 1)",
+    textsize: 14,
+    textfont: "Georgia",
+    textpadding: 4
   }
 }
 
