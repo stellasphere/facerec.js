@@ -225,6 +225,7 @@ facerec.drawResults = async function(results,image,overlay){
     const box = resizeddescriptions[i].detection.box
 
     var drawboxsettings = facerec.internal.drawBoxSettings(match)
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
     
     const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
     
@@ -266,6 +267,7 @@ facerec.resultsImage = function(results,image,options) {
     var drawboxsettings = facerec.internal.drawBoxSettings(result)
 
     const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
     
     drawBox.draw(resultimage)
   })
