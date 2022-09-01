@@ -223,12 +223,10 @@ facerec.drawResults = async function(results,image,overlay){
     if(facerec.debug) console.log("match:",match)
     
     const box = resizeddescriptions[i].detection.box
-    const text = facerec.options.label.text(match)
-    const drawBox = new faceapi.draw.DrawBox(box, {
-      label: text,
-      boxColor: facerec.options.label.linecolor,
-      lineWidth: facerec.options.label.linewidth,
-    })
+
+    var drawboxsettings = facerec.internal.drawBoxSettings(match)
+    
+    const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
     
     drawBox.draw(overlay)
   })
@@ -264,13 +262,10 @@ facerec.resultsImage = function(results,image,options) {
     if(facerec.debug) console.log("result:",result)
     
     const box = result.description.detection.box
-    const text = facerec.options.label.text(result)
 
-    const drawBox = new faceapi.draw.DrawBox(box, {
-      boxColor: facerec.options.label.linecolor,
-      lineWidth: facerec.options.label.linewidth,
-      label: text
-    })
+    var drawboxsettings = facerec.internal.drawBoxSettings(result)
+
+    const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
     
     drawBox.draw(resultimage)
   })
