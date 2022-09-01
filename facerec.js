@@ -315,6 +315,8 @@ facerec.createOverlay = function(element) {
 
 facerec.internal = {
   drawBoxSettings: function(result) {
+    if(facerec.debug) console.groupCollapsed("FaceRec: internal.drawBoxSettings")
+      
     var text = facerec.options.label.text(result)
 
     var labeloptions = {
@@ -329,6 +331,7 @@ facerec.internal = {
     labeloptions.anchorPosition = labeloptions.anchorPosition || "BOTTOM_LEFT"
     labeloptions.backgroundColor = labeloptions.backgroundColor || facerec.options.label.linecolor
     
+    if(facerec.debug) console.groupEnd("FaceRec: internal.drawBoxSettings")
     return {
       boxColor: facerec.options.label.linecolor,
       lineWidth: facerec.options.label.linewidth,
