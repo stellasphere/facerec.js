@@ -240,7 +240,16 @@ await facerec.init({
 - **modelsurl:** Location of the directory where the facial recognition models are located.
 - **TinyFaceDetector, SsdMobilenetv1, Mtcnn:** Option to load that model
 - **modelpriority:** Priority of the model used. If a face can't be detected using the first model, it will try using other models and go down the list.
-- **overlaytext:** A function that generates the text tags when the recognition results are visualized. Like in the `facerec.drawResults()` function and the webcam detection.
+- **overlaytext:** 
+- **label:** An object containing the label settings, which customize the visualization of face recognition results, like in the `facerec.resultsImage()` function and the webcam detection. See below.
+- **label.text:** A function that generates the text tags when the recognition results are visualized. For more info, see: 
+- **label.linecolor:** The color of the line around the detected face. Also the color of the text background if `label.textbackgroundcolor` is not set. Given as a CSS `color` property value. 
+- **label.linewidth:** The width/thickness of the line around the detected face. Given as a integer, not a string, in `px` units. See default option values for more info.
+- **label.textbackgroundcolor:** The color of the text background. Defaults to the `label.linecolor` if not set. Given as a CSS `color` property value.
+- **label.textcolor:** The color of the text itself. Given as a CSS `color` property value.
+- **label.textsize:** The size of the text. Given as a integer, not a string, in `px` units. See default option values for more info.
+- **label.textfont:** The font of the text in the label. Given as a CSS `font-family` property value. 
+- **label.textpadding:** The amount of padding around the text within the label. Given as a integer, not a string, in `px` units. See default option values for more info.
 
 **Returns:** None
 
