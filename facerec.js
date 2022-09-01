@@ -28,12 +28,12 @@ facerec.options = {
     },
     linecolor: 'rgba(0, 0, 255, 1)',
     linewidth: 2,
-    textanchorposition: "TOP_LEFT",
-    textbackgroundcolor: "rgba(0, 0, 0, 0.5)",
+    textanchorposition: undefined,
+    textbackgroundcolor: undefined,
     textcolor: "rgba(255, 255, 255, 1)",
     textsize: 14,
     textfont: "Georgia",
-    textpadding: 4
+    textpadding: 4 
   }
 }
 
@@ -323,6 +323,9 @@ facerec.internal = {
       fontStyle: facerec.options.label.textfont,
       padding: facerec.options.label.textpadding
     }
+
+    labeloptions.anchorPosition = labeloptions.anchorPosition || "BOTTOM_LEFT"
+    labeloptions.backgroundColor = labeloptions.backgroundColor || facerec.options.label.linecolor
     
     return {
       boxColor: facerec.options.label.linecolor,
