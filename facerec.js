@@ -321,7 +321,12 @@ facerec.internal = {
     var text = facerec.options.label.text(result)
 
     var labeloptions = {
-      
+      anchorPosition: facerec.options.label.textanchorposition,
+      backgroundColor: facerec.options.label.textbackgroundcolor,
+      fontColor: facerec.options.label.textcolor,
+      fontSize: facerec.options.label.textsize,
+      fontStyle: facerec.options.label.textfont,
+      padding: facerec.options.label.textpadding
     }
     
     return {
