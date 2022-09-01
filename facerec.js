@@ -28,7 +28,6 @@ facerec.options = {
     },
     linecolor: 'rgba(0, 0, 255, 1)',
     linewidth: 2,
-    textanchorposition: undefined,
     textbackgroundcolor: undefined,
     textcolor: "rgba(255, 255, 255, 1)",
     textsize: 14,
@@ -321,7 +320,7 @@ facerec.internal = {
     if(facerec.debug) console.log("resolved text:",text)
 
     var labeloptions = {
-      anchorPosition: facerec.options.label.textanchorposition,
+      anchorPosition: "BOTTOM_LEFT",
       backgroundColor: facerec.options.label.textbackgroundcolor,
       fontColor: facerec.options.label.textcolor,
       fontSize: facerec.options.label.textsize,
@@ -330,7 +329,6 @@ facerec.internal = {
     }
     if(facerec.debug) console.log("resolved label options:",labeloptions)
 
-    labeloptions.anchorPosition = labeloptions.anchorPosition || "BOTTOM_LEFT"
     labeloptions.backgroundColor = labeloptions.backgroundColor || facerec.options.label.linecolor
     if(facerec.debug) console.log("updated undefined label options:",labeloptions)
 
