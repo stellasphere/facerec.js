@@ -318,6 +318,7 @@ facerec.internal = {
     if(facerec.debug) console.groupCollapsed("FaceRec: internal.drawBoxSettings")
       
     var text = facerec.options.label.text(result)
+    if(facerec.debug) console.log("resolved text:",text)
 
     var labeloptions = {
       anchorPosition: facerec.options.label.textanchorposition,
@@ -327,17 +328,22 @@ facerec.internal = {
       fontStyle: facerec.options.label.textfont,
       padding: facerec.options.label.textpadding
     }
+    if(facerec.debug) console.log("resolved label options:",labeloptions)
 
     labeloptions.anchorPosition = labeloptions.anchorPosition || "BOTTOM_LEFT"
     labeloptions.backgroundColor = labeloptions.backgroundColor || facerec.options.label.linecolor
-    
-    if(facerec.debug) console.groupEnd("FaceRec: internal.drawBoxSettings")
-    return {
+    if(facerec.debug) console.log("updated undefined label options:",labeloptions)
+
+    var drawboxsettings = {
       boxColor: facerec.options.label.linecolor,
       lineWidth: facerec.options.label.linewidth,
       drawLabelOptions: labeloptions,
       label: text
     }
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
+    
+    if(facerec.debug) console.groupEnd("FaceRec: internal.drawBoxSettings")
+    return drawboxsettings
   }
 }
 
