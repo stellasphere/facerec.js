@@ -6,6 +6,8 @@ A JavaScript package designed specifically for facial recognition. A wrapper of 
 Compared to faceapi.js, which is centered around several uses, one of them being facial recognition, this package is a more streamlined version with facial recognition in mind.
 
 ## Table of Contents
+- [facerec.js](#facerecjs)
+  - [Table of Contents](#table-of-contents)
 - [Getting Started](#getting-started)
   - [Installation](#installation)
     - [Node.js Compatibility](#nodejs-compatibility)
@@ -20,12 +22,13 @@ Compared to faceapi.js, which is centered around several uses, one of them being
       - [Getting the raw results from a URL image](#getting-the-raw-results-from-a-url-image)
       - [Recognizing results from a webcam feed](#recognizing-results-from-a-webcam-feed)
 - [API](#api)
-  - [*async function:* facerec.init(options)](#async-function-facerecinitoptions)
+  - [*async function:* facerec.init(?options)](#async-function-facerecinitoptions)
   - [*async function:* facerec.getImage(imageurl)](#async-function-facerecgetimageimageurl)
   - [*async function:* facerec.facedescriptor(faceimage)](#async-function-facerecfacedescriptorfaceimage)
   - [*async function:* facerec.facedescriptors(faceimage)](#async-function-facerecfacedescriptorsfaceimage)
   - [*async function:* facerec.labeledfacedescriptor(label, faceimage)](#async-function-facereclabeledfacedescriptorlabel-faceimage)
   - [*async function:* facerec.recognizer(arraylabeledfacedescriptor, threshold)](#async-function-facerecrecognizerarraylabeledfacedescriptor-threshold)
+  - [*async function:* facerec.resultsImage(results,image,?options)](#async-function-facerecresultsimageresultsimageoptions)
   - [*async function:* facerec.drawResults(results,image,overlay)](#async-function-facerecdrawresultsresultsimageoverlay)
   - [*async function:* facerec.createOverlay(element)](#async-function-facereccreateoverlayelement)
 - [Reference](#reference)
@@ -84,6 +87,8 @@ facerec.init().then(async function(){
   // facerec.js can be used here now
 }) // default init using '.then()'
 ```
+
+[See the full options and docs for the `facerec.init()` function here.](#async-function-facerecinitoptions)
 
 # Guide
 This guide will go from start to finish over an example of creating and using a facial recognition model. 
@@ -244,9 +249,11 @@ await facerec.init({
   TinyFaceDetector: false,
   SsdMobilenetv1: true,
   Mtcnn: false,
-  modelpriority: ["SsdMobilenetv1"], // 
-  overlaytext: function(result) {
-    return `${result.label} (${result.percentconfidence}%)`
+  modelpriority: ["SsdMobilenetv1"],
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    }
   }
 })
 ```
@@ -254,7 +261,39 @@ await facerec.init({
 - **modelsurl:** Location of the directory where the facial recognition models are located.
 - **TinyFaceDetector, SsdMobilenetv1, Mtcnn:** Option to load that model
 - **modelpriority:** Priority of the model used. If a face can't be detected using the first model, it will try using other models and go down the list.
-- **overlaytext:** A function that generates the text tags when the recognition results are visualized. Like in the `facerec.drawResults()` function and the webcam detection.
+- **overlaytext:** 
+- **label:** An object containing the label settings, which customize the visualization of face recognition results, like in the `facerec.resultsImage()` function and the webcam detection. See below.
+- **label.text:** A function that generates the text tags when the recognition results are visualized. For more info, see: [How do I customize the label text in the overlay results?](#how-do-i-customize-the-label-text-in-the-overlay-results)
+- **label.linecolor:** The color of the line around the detected face. Also the color of the text background if `label.textbackgroundcolor` is not set. Given as a CSS `color` property value. 
+- **label.linewidth:** The width/thickness of the line around the detected face. Given as a integer, not a string, in `px` units. See default option values for more info.
+- **label.textbackgroundcolor:** The color of the text background. Defaults to the `label.linecolor` if not set. Given as a CSS `color` property value.
+- **label.textcolor:** The color of the text itself. Given as a CSS `color` property value.
+- **label.textsize:** The size of the text. Given as a integer, not a string, in `px` units. See default option values for more info.
+- **label.textfont:** The font of the text in the label. Given as a CSS `font-family` property value. 
+- **label.textpadding:** The amount of padding around the text within the label. Given as a integer, not a string, in `px` units. See default option values for more info.
+
+**Default Options:**
+```js
+{
+  modelsurl: "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights",
+  TinyFaceDetector: false,
+  SsdMobilenetv1: true,
+  Mtcnn: false,
+  modelpriority: ["SsdMobilenetv1"],
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    },
+    linecolor: 'rgba(0, 0, 255, 1)',
+    linewidth: 2,
+    textbackgroundcolor: undefined,
+    textcolor: "rgba(255, 255, 255, 1)",
+    textsize: 14,
+    textfont: "Georgia",
+    textpadding: 4 
+  }
+}
+```
 
 **Returns:** None
 
@@ -357,8 +396,7 @@ The default options object:
 var defaultoptions = {
   drawdetections: true, // Whether to draw the box around detected faces
   drawlandmarks: true, // Whether to draw the landmarks (dots) on the faces
-  linecolor: 'rgba(0, 0, 255, 1)', // What color to draw the box
-  linewidth: 2 // Width of the box border
+  // Previously, the linewidth and linecolor options were here, but they were moved to the `facerec.init()` options under the `label.linewidth` and `label.linecolor` options.
 }
 ```
 
@@ -368,9 +406,7 @@ var defaultoptions = {
 ```js
 var resultimageoptions = {
   drawdetections: false,
-  drawlandmarks: false,
-  linecolor: 'red',
-  linewidth: 1
+  drawlandmarks: false
 }
 var resultimage = facerec.resultsImage(result,image,resultimageoptions)
 ```
@@ -461,15 +497,17 @@ facerec.debug = false // Off
 # FAQ
 
 ## How do I customize the label text in the overlay results?
-You can customize the label text in the options under the one called `overlaytext`.
+You can customize the label text in the options under the one called `text` under the `label` options.
 
 The option works as a function, with whatever it returns coming up as the label.
 
 You can customize it by defining it in the initalization function like so:
 ```js
 facerec.init({
-  overlaytext: function(result) {
-    return `This face is ${result.label}`
+  label: {
+    text: function(result) {
+      return `This face is ${result.label}`
+    }
   }
 })
 ```

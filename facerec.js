@@ -22,8 +22,17 @@ facerec.options = {
   SsdMobilenetv1: true,
   Mtcnn: false,
   modelpriority: ["SsdMobilenetv1"],
-  overlaytext: function(result) {
-    return `${result.label} (${result.percentconfidence}%)`
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    },
+    linecolor: 'rgba(0, 0, 255, 1)',
+    linewidth: 2,
+    textbackgroundcolor: undefined,
+    textcolor: "rgba(255, 255, 255, 1)",
+    textsize: 14,
+    textfont: "Georgia",
+    textpadding: 4 
   }
 }
 
@@ -213,8 +222,11 @@ facerec.drawResults = async function(results,image,overlay){
     if(facerec.debug) console.log("match:",match)
     
     const box = resizeddescriptions[i].detection.box
-    const text = facerec.options.overlaytext(match)
-    const drawBox = new faceapi.draw.DrawBox(box, { label: text })
+
+    var drawboxsettings = facerec.internal.drawBoxSettings(match)
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
+    
+    const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
     
     drawBox.draw(overlay)
   })
@@ -227,9 +239,7 @@ facerec.resultsImage = function(results,image,options) {
 
   var defaultoptions = {
     drawdetections: true,
-    drawlandmarks: true,
-    linecolor: 'rgba(0, 0, 255, 1)',
-    linewidth: 2
+    drawlandmarks: true
   }
 
   options = options || {}
@@ -252,13 +262,11 @@ facerec.resultsImage = function(results,image,options) {
     if(facerec.debug) console.log("result:",result)
     
     const box = result.description.detection.box
-    const text = facerec.options.overlaytext(result)
 
-    const drawBox = new faceapi.draw.DrawBox(box, {
-      boxColor: options.linecolor,
-      lineWidth: options.linewidth,
-      label: text
-    })
+    var drawboxsettings = facerec.internal.drawBoxSettings(result)
+
+    const drawBox = new faceapi.draw.DrawBox(box, drawboxsettings)
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
     
     drawBox.draw(resultimage)
   })
@@ -301,6 +309,39 @@ facerec.createOverlay = function(element) {
   return {
     overlay,
     originalcontent,
+  }
+}
+
+facerec.internal = {
+  drawBoxSettings: function(result) {
+    if(facerec.debug) console.groupCollapsed("FaceRec: internal.drawBoxSettings")
+      
+    var text = facerec.options.label.text(result)
+    if(facerec.debug) console.log("resolved text:",text)
+
+    var labeloptions = {
+      anchorPosition: "BOTTOM_LEFT",
+      backgroundColor: facerec.options.label.textbackgroundcolor,
+      fontColor: facerec.options.label.textcolor,
+      fontSize: facerec.options.label.textsize,
+      fontStyle: facerec.options.label.textfont,
+      padding: facerec.options.label.textpadding
+    }
+    if(facerec.debug) console.log("resolved label options:",labeloptions)
+
+    labeloptions.backgroundColor = labeloptions.backgroundColor || facerec.options.label.linecolor
+    if(facerec.debug) console.log("updated undefined label options:",labeloptions)
+
+    var drawboxsettings = {
+      boxColor: facerec.options.label.linecolor,
+      lineWidth: facerec.options.label.linewidth,
+      drawLabelOptions: labeloptions,
+      label: text
+    }
+    if(facerec.debug) console.log("draw box settings:",drawboxsettings)
+    
+    if(facerec.debug) console.groupEnd("FaceRec: internal.drawBoxSettings")
+    return drawboxsettings
   }
 }
 
