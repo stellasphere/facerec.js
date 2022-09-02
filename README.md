@@ -6,6 +6,8 @@ A JavaScript package designed specifically for facial recognition. A wrapper of 
 Compared to faceapi.js, which is centered around several uses, one of them being facial recognition, this package is a more streamlined version with facial recognition in mind.
 
 ## Table of Contents
+- [facerec.js](#facerecjs)
+  - [Table of Contents](#table-of-contents)
 - [Getting Started](#getting-started)
   - [Installation](#installation)
     - [Node.js Compatibility](#nodejs-compatibility)
@@ -20,12 +22,13 @@ Compared to faceapi.js, which is centered around several uses, one of them being
       - [Getting the raw results from a URL image](#getting-the-raw-results-from-a-url-image)
       - [Recognizing results from a webcam feed](#recognizing-results-from-a-webcam-feed)
 - [API](#api)
-  - [*async function:* facerec.init(options)](#async-function-facerecinitoptions)
+  - [*async function:* facerec.init(?options)](#async-function-facerecinitoptions)
   - [*async function:* facerec.getImage(imageurl)](#async-function-facerecgetimageimageurl)
   - [*async function:* facerec.facedescriptor(faceimage)](#async-function-facerecfacedescriptorfaceimage)
   - [*async function:* facerec.facedescriptors(faceimage)](#async-function-facerecfacedescriptorsfaceimage)
   - [*async function:* facerec.labeledfacedescriptor(label, faceimage)](#async-function-facereclabeledfacedescriptorlabel-faceimage)
   - [*async function:* facerec.recognizer(arraylabeledfacedescriptor, threshold)](#async-function-facerecrecognizerarraylabeledfacedescriptor-threshold)
+  - [*async function:* facerec.resultsImage(results,image,?options)](#async-function-facerecresultsimageresultsimageoptions)
   - [*async function:* facerec.drawResults(results,image,overlay)](#async-function-facerecdrawresultsresultsimageoverlay)
   - [*async function:* facerec.createOverlay(element)](#async-function-facereccreateoverlayelement)
 - [Reference](#reference)
