@@ -71,6 +71,8 @@ facerec.init().then(async function(){
 }) // default init using '.then()'
 ```
 
+[See the full options and docs for the `facerec.init()` function here.](#async-function-facerecinitoptions)
+
 # Guide
 This guide will go from start to finish over an example of creating and using a facial recognition model. 
 
@@ -230,9 +232,11 @@ await facerec.init({
   TinyFaceDetector: false,
   SsdMobilenetv1: true,
   Mtcnn: false,
-  modelpriority: ["SsdMobilenetv1"], // 
-  overlaytext: function(result) {
-    return `${result.label} (${result.percentconfidence}%)`
+  modelpriority: ["SsdMobilenetv1"],
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    }
   }
 })
 ```
@@ -242,7 +246,7 @@ await facerec.init({
 - **modelpriority:** Priority of the model used. If a face can't be detected using the first model, it will try using other models and go down the list.
 - **overlaytext:** 
 - **label:** An object containing the label settings, which customize the visualization of face recognition results, like in the `facerec.resultsImage()` function and the webcam detection. See below.
-- **label.text:** A function that generates the text tags when the recognition results are visualized. For more info, see: 
+- **label.text:** A function that generates the text tags when the recognition results are visualized. For more info, see: [How do I customize the label text in the overlay results?](#how-do-i-customize-the-label-text-in-the-overlay-results)
 - **label.linecolor:** The color of the line around the detected face. Also the color of the text background if `label.textbackgroundcolor` is not set. Given as a CSS `color` property value. 
 - **label.linewidth:** The width/thickness of the line around the detected face. Given as a integer, not a string, in `px` units. See default option values for more info.
 - **label.textbackgroundcolor:** The color of the text background. Defaults to the `label.linecolor` if not set. Given as a CSS `color` property value.
@@ -250,6 +254,29 @@ await facerec.init({
 - **label.textsize:** The size of the text. Given as a integer, not a string, in `px` units. See default option values for more info.
 - **label.textfont:** The font of the text in the label. Given as a CSS `font-family` property value. 
 - **label.textpadding:** The amount of padding around the text within the label. Given as a integer, not a string, in `px` units. See default option values for more info.
+
+**Default Options:**
+```js
+{
+  modelsurl: "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights",
+  TinyFaceDetector: false,
+  SsdMobilenetv1: true,
+  Mtcnn: false,
+  modelpriority: ["SsdMobilenetv1"],
+  label: {
+    text: function(result) {
+      return `${result.label} (${result.percentconfidence}%)`
+    },
+    linecolor: 'rgba(0, 0, 255, 1)',
+    linewidth: 2,
+    textbackgroundcolor: undefined,
+    textcolor: "rgba(255, 255, 255, 1)",
+    textsize: 14,
+    textfont: "Georgia",
+    textpadding: 4 
+  }
+}
+```
 
 **Returns:** None
 
@@ -352,8 +379,7 @@ The default options object:
 var defaultoptions = {
   drawdetections: true, // Whether to draw the box around detected faces
   drawlandmarks: true, // Whether to draw the landmarks (dots) on the faces
-  linecolor: 'rgba(0, 0, 255, 1)', // What color to draw the box
-  linewidth: 2 // Width of the box border
+  // Previously, the linewidth and linecolor options were here, but they were moved to the `facerec.init()` options under the `label.linewidth` and `label.linecolor` options.
 }
 ```
 
@@ -363,9 +389,7 @@ var defaultoptions = {
 ```js
 var resultimageoptions = {
   drawdetections: false,
-  drawlandmarks: false,
-  linecolor: 'red',
-  linewidth: 1
+  drawlandmarks: false
 }
 var resultimage = facerec.resultsImage(result,image,resultimageoptions)
 ```
@@ -456,15 +480,17 @@ facerec.debug = false // Off
 # FAQ
 
 ## How do I customize the label text in the overlay results?
-You can customize the label text in the options under the one called `overlaytext`.
+You can customize the label text in the options under the one called `text` under the `label` options.
 
 The option works as a function, with whatever it returns coming up as the label.
 
 You can customize it by defining it in the initalization function like so:
 ```js
 facerec.init({
-  overlaytext: function(result) {
-    return `This face is ${result.label}`
+  label: {
+    text: function(result) {
+      return `This face is ${result.label}`
+    }
   }
 })
 ```
