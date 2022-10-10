@@ -76,7 +76,6 @@ facerec.init = async function(options) {
   // LOADING IN REQUIRED MODELS
   await faceapi.loadFaceLandmarkModel(facerec.options.modelsurl)
   await faceapi.loadFaceRecognitionModel(facerec.options.modelsurl)
-
   
   if(facerec.debug) console.groupEnd("FaceRec: init")
 
