@@ -276,10 +276,10 @@ await facerec.init({
 ```js
 {
   modelsurl: "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights",
-  TinyFaceDetector: false,
+  TinyFaceDetector: true,
   SsdMobilenetv1: true,
   Mtcnn: false,
-  modelpriority: ["SsdMobilenetv1"],
+  modelpriority: ["SsdMobilenetv1","TinyFaceDetector"],
   label: {
     text: function(result) {
       return `${result.label} (${result.percentconfidence}%)`
