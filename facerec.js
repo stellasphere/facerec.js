@@ -423,13 +423,21 @@ facerec.Dataset = class FaceRecDataset {
     for(var image of this.images) {
       if(facerec.debug) console.time("image")
       var faceimage = await facerec.getImage(image.imageurl)
-      var labeledfacedescriptor = await facerec.labeledfacedescriptor(image.label,faceimage)
       
-      if(facerec.debug) console.log("adding image",image,labeledfacedescriptor)
-      
-      if(labeledfacedescriptor) {
-        arraylabeledfacedescriptors.push(labeledfacedescriptor)
+      var labeledfacedescriptor
+      try {
+        labeledfacedescriptor = await facerec.labeledfacedescriptor(image.label,faceimage)
+        
+        if(facerec.debug) console.log("adding image",image,labeledfacedescriptor)
+        
+        if(labeledfacedescriptor) {
+          arraylabeledfacedescriptors.push(labeledfacedescriptor)
+        }
+      } catch(e) {
+        if(facerec.debug) console.log("error getting the labeled face descriptor. skipping.")
+        console.error(e)
       }
+
       if(facerec.debug) console.timeEnd("image")
     }
   
