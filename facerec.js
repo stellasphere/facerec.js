@@ -1,4 +1,5 @@
 if(typeof global !== 'undefined') {
+  global.onnode = true
   global.tf = require('@tensorflow/tfjs-node')
   global.faceapi = require('@vladmandic/face-api')
   global.fetch = require("node-fetch")
@@ -7,6 +8,7 @@ if(typeof global !== 'undefined') {
   global.Image = require("canvas").Image
   global.ImageData = require("canvas").ImageData
   global.loadImage = require("canvas").loadImage
+  global.fsp = require("fs").promises
   faceapi.env.monkeyPatch({ Canvas, Image, ImageData, loadImage, fetch })
 }
 
@@ -381,6 +383,36 @@ facerec.Dataset = class FaceRecDataset {
     if(facerec.debug) console.groupEnd("labeledimagesiterator")
     
     if(facerec.debug) console.groupEnd("facerec.Dataset: addImages")
+  }
+  addImagesFromDirectory = async function(path) {
+    if(facerec.debug) console.groupCollapsed("facerec.Dataset: addImagesFromDirectory")
+
+    if(!onnode) {
+      if(facerec.debug) console.log("Not Node.js, unable")
+      return new Error("Unable to use addImagesFromDirectory since it is not run in a Node.js enviorment")
+    }
+
+    var directory = await fsp.readdir(path)
+    if(facerec.debug) console.log("directory contents:",directory)
+
+    var names = directory
+    for(var name of names) {
+      var subdirectorycontents = await fsp.readdir(`${path}/${name}`)
+      if(facerec.debug) console.log("subdirectory contents:",subdirectorycontents)
+
+      var subdirectoryimages = subdirectorycontents.map(function(imagename) {
+        return {
+          label: name,
+          imageurl: `${path}/${name}/${imagename}`
+        }
+      })
+
+      if(facerec.debug) console.log("subdirectory data:", subdirectoryimages)
+
+      this.addImages(subdirectoryimages)
+    }
+    
+    if(facerec.debug) console.groupEnd("facerec.Dataset: addImagesFromDirectory")
   }
   toLabeledFaceDescriptors = async function() {
     if(!facerec.initalized) throw Error("facerec.js not initalized")
